@@ -1,4 +1,4 @@
-# Mentoria SQL — ClassicModels
+# Mentoria SQL - ClassicModels
 
 Entorno Jupyter listo para ejecutar con Docker. Incluye los notebooks del Taller 2
 (SQL + pandas + limpieza de datos) y la base de datos ClassicModels en SQLite.
@@ -9,6 +9,21 @@ Entorno Jupyter listo para ejecutar con Docker. Incluye los notebooks del Taller
 
 ## Arrancar el entorno
 
+**Mac / Linux**
+```bash
+git clone https://github.com/tipping-points/classic_SQL.git
+cd classic_SQL
+make up
+```
+
+**Windows**
+```bat
+git clone https://github.com/tipping-points/classic_SQL.git
+cd classic_SQL
+start.bat
+```
+
+O directamente:
 ```bash
 docker compose up
 ```
@@ -26,31 +41,31 @@ Token de acceso: **classicmodels**
 ## Parar el entorno
 
 ```bash
-docker compose down
+make down        # Mac / Linux
+stop.bat         # Windows
+docker compose down  # cualquier sistema
 ```
 
-## Estructura del repo
+## Si el puerto 8888 ya esta ocupado
 
-```
-mentoria-sql/
-├── Dockerfile
-├── docker-compose.yml
-├── notebooks/
-│   ├── taller_2_v3.ipynb          <- notebook principal del taller
-│   └── extra/
-│       ├── Extra_Exercicis_ClassicModels.ipynb
-│       └── ExtraExercices_UNSOLVED.ipynb
-└── data/
-    ├── classic.db                  <- base de datos ClassicModels (SQLite)
-    └── estructura_tablas.csv
+Edita `docker-compose.yml` y cambia el puerto izquierdo:
+
+```yaml
+ports:
+  - "8889:8888"   # cambia 8888 por otro puerto libre
 ```
 
-## Base de datos
+Luego accede en `http://localhost:8889`.
 
-La ruta dentro del contenedor es `/home/jovyan/work/data/classic.db`.
-El notebook la detecta automaticamente — no hace falta cambiar ninguna ruta.
+## Sin Docker (uso local)
 
-Para uso local sin Docker, exporta la variable de entorno antes de abrir Jupyter:
+Instala las dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+Antes de abrir Jupyter, indica la ruta a la base de datos:
 
 ```bash
 # Linux / Mac
@@ -60,17 +75,39 @@ export DB_PATH=/ruta/a/classic.db
 $env:DB_PATH = "C:\ruta\a\classic.db"
 ```
 
-## Tablas disponibles en classic.db
+## Estructura del repo
+
+```
+classic_SQL/
+├── Dockerfile
+├── docker-compose.yml
+├── Makefile                              <- comandos rapidos (Mac/Linux)
+├── start.bat / stop.bat                  <- comandos rapidos (Windows)
+├── requirements.txt                      <- dependencias para uso local
+├── notebooks/
+│   ├── taller_2_v3.ipynb                 <- notebook completo (PROFESOR)
+│   ├── taller_2_v3_ESTUDIANTE.ipynb      <- notebook con stubs (ESTUDIANTE)
+│   ├── ClassicModels_curso_SQL.ipynb     <- teoria SQL del curso
+│   └── extra/
+│       ├── Extra_Exercicis_ClassicModels.ipynb
+│       └── ExtraExercices_UNSOLVED.ipynb
+└── data/
+    ├── classic.db                        <- base de datos principal
+    ├── test.db                           <- base de datos de practica
+    └── estructura_tablas.csv
+```
+
+## Tablas en classic.db
 
 | Tabla | Descripcion |
 |---|---|
 | customers | Clientes |
 | orders | Pedidos |
-| orderdetails | Lineas de pedido (productos por pedido) |
+| orderdetails | Lineas de pedido |
 | products | Catalogo de productos |
-| productlines | Categorias de productos |
+| productlines | Categorias |
 | employees | Empleados |
 | offices | Oficinas |
-| payments | Pagos recibidos |
+| payments | Pagos |
 
-Relaciones clave: `customers -> orders -> orderdetails -> products`
+Relacion principal: `customers -> orders -> orderdetails -> products`

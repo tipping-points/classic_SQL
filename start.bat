@@ -1,0 +1,3 @@
+@echo off
+echo Arrancando entorno Jupyter...
+docker compose up
